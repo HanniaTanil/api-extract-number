@@ -4,8 +4,10 @@
 ##Hannia Tanil Padilla Escobar 
 ##28 de enero de 2025
 
-from fastapi import FastAPI, HTTPException 
+from fastapi import FastAPI, HTTPException, Request 
 from pydantic import BaseModel, Field #validación de los datos
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 
 #Clase para representar el conjunto de números
 class NumerosNaturales:
@@ -47,6 +49,14 @@ app = FastAPI()
 # Instancia de la clase NumerosNaturales
 numeros = NumerosNaturales()
 
+#Capturar errores 422 (en caso de un formato que no sea número)
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    return JSONResponse(
+        status_code=422,
+        content={"detalles": "Error en la solicitud: Asegurate de enviar un número entero válido"}
+    )
+
 #endpoint extract
 @app.post("/extract")
 def extract_number(request: ExtractRequest):
@@ -55,6 +65,7 @@ def extract_number(request: ExtractRequest):
     #Valida el número y devuelve el faltante.
     
     number = request.number
+
     if not (1 <= number <= 100):
         raise HTTPException(status_code=400, detail="El número debe estar entre 1 y 100.")
     
