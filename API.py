@@ -31,6 +31,9 @@ class NumerosNaturales:
         suma_esperada = self.n * (self.n + 1) // 2
         suma_actual = sum(self.current_set)
         return suma_esperada - suma_actual
+    
+    def reset(self):
+        self.current_set = self.full_set.copy()
 
 
 # Modelo de entrada para la API
@@ -59,10 +62,16 @@ def extract_number(request: ExtractRequest):
         # se llama al método extract
         numeros.extract(number)
         numero_faltante = numeros.encontrar_numero_faltante()
-        return {
+        response = {
             "message": f"Número {number} extraído correctamente.",
             "numero extraído": numero_faltante,
         }
+    
+        #Reiniciar el conjunto automáticamente
+        numeros.reset()
+
+        return response
+    
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -72,6 +81,5 @@ def reset_set():
     """
     Endpoint para reiniciar el conjunto de números a su estado original.
     """
-    global numeros
-    numeros = NumerosNaturales()
+    numeros.reset()
     return {"message": "Conjunto reiniciado correctamente."}
