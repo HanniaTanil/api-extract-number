@@ -10,11 +10,14 @@ Especificaciones:
 
 
 La API cuenta con dos endpoints
+
 /extract 
+
 Donde se extrae el numero ingresado del conjunto de los primeros cien números naturales y se calcula a partir de la diferencia
 de sumas de los dos conjuntos.
 Se valida que la entrada sea un número y sea menor a 100
 Se vuelve a crear el conjunto de 100 números naturales para más consultas
 
 /reset
+
 Se vuelve a crear el conjunto de números naturales para más consultas
